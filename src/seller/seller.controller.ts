@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
+import { AddSellerDto } from './dto/AddSeller.dto';
 import { Seller } from './Seller.model';
 import { SellerService } from './seller.service';
 
@@ -9,5 +10,10 @@ export class SellerController {
     @Get()
     getAllSelers():Promise<Seller[]>{
         return this.sellerService.getAllSellers()
+    }
+
+    @Post()
+    createSeller(@Body() addSellerDto: AddSellerDto): Promise<Seller>{
+        return this.sellerService.createSeller(addSellerDto);
     }
 }

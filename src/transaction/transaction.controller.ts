@@ -1,15 +1,16 @@
 import { Transaction } from './Transaction.model';
 import { AddTransactionDto } from './dto/addTransaction.dto';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
+import { GetTransactionFilterDto } from './dto/getTransactionFilter.dto';
 
 @Controller('transaction')
 export class TransactionController {
     constructor(private transactionService: TransactionService){}
 
     @Get()
-    getALLTasks():Promise<Transaction[]>{
-        return this.transactionService.getAllTransactions()
+    getALLTasks(@Query() getTransactionDto: GetTransactionFilterDto):Promise<Transaction[]>{
+        return this.transactionService.getAllTransactions(getTransactionDto)
     }
 
     @Post()

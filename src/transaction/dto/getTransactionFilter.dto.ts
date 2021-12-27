@@ -1,8 +1,8 @@
 import { IsString } from "class-validator";
 
-export class getTransactionFilterDto {
+export class GetTransactionFilterDto {
     date: string;
-    
+
     @IsString()
     seller: string;
 

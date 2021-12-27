@@ -20,4 +20,9 @@ export class TransactionRepository {
         }).save()
         return transaction;
     }
+
+    async getSingleTransaction (id: string):Promise<Transaction> {
+        
+        return this.Transaction.findById(id);
+    }
 }

@@ -8,10 +8,14 @@ export class TransactionService {
     constructor(private transactionRepository: TransactionRepository ){}
 
     async getAllTransactions():Promise<Transaction[]>{
-        return this.transactionRepository.getAllTransactions()
+        return this.transactionRepository.getAllTransactions();
     }
 
     async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{
         return this.transactionRepository.addTransaction(addTransactionDto);
+    }
+
+    async getSingleTransaction (id: string):Promise<Transaction> {
+        return this.transactionRepository.getSingleTransaction(id);
     }
 }

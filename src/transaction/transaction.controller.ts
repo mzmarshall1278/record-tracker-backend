@@ -1,6 +1,6 @@
 import { Transaction } from './Transaction.model';
 import { AddTransactionDto } from './dto/addTransaction.dto';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 
 @Controller('transaction')
@@ -15,5 +15,10 @@ export class TransactionController {
     @Post()
     addTransaction(@Body() addTransactionDto: AddTransactionDto):Promise<Transaction>{
         return this.transactionService.addTransaction(addTransactionDto);
+    }
+
+    @Get('/:id')
+    getSingleTransaction(@Param('id') id: string): Promise<Transaction> {
+        return this.transactionService.getSingleTransaction(id);
     }
 }

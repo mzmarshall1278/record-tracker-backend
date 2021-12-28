@@ -1,11 +1,23 @@
+import { IsString } from "class-validator";
+
 export class GetSellerFilterDto {
+    @IsString()
     name: string;
-    lga: string;
+
+    @IsString()
+    LGA: string;
+
+    @IsString()
     deal: string;
-    status: SellerStatus
+
+    @IsString()
+    status: SellerStatus;
+
+    @IsString()
+    phone: string;
 }
 
 export enum SellerStatus {
-    completed = 'Completed',
+    completed = 'COMPLETED',
     pending = 'PENDING'
 }

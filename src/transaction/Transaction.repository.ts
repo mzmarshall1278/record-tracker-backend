@@ -34,19 +34,6 @@ export class TransactionRepository {
         if(date){
             pipelines.push({$match: {date}})
         }
-        // if(groupBy){
-        //     pipelines.push({
-        //         $group:{
-        //             _id: {
-        //                 $isoWeek:  new Date('date')
-        //             },
-        //             totalTransactions: {$sum: 1},
-        //          totalSale: {$sum: '$price'},
-        //          totalWeight: {$sum: '$weight'},
-        //          totalQuantity: {$sum: '$quantity'},
-        //         }
-        //     })
-        // }
 
         pipelines.push(
             {$sort: {_id: -1}}

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { SellerStatus } from "./getSellerfilter.dto";
 
 export class AddSellerDto {
@@ -24,5 +24,6 @@ export class AddSellerDto {
 
     @IsString()
     @IsNotEmpty()
+    @IsEnum(SellerStatus)
     status: SellerStatus;
 }

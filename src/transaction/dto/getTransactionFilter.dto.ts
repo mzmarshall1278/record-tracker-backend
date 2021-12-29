@@ -1,8 +1,11 @@
-import { IsString } from "class-validator";
+import { IsBoolean, IsOptional, IsString } from "class-validator";
 
 export class GetTransactionFilterDto {
+    @IsString()
+    @IsOptional()
     date: string;
 
-    @IsString()
+    @IsBoolean()
+    @IsOptional()
     groupBy: Boolean;
 }

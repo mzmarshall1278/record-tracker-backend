@@ -35,9 +35,7 @@ export class TransactionRepository {
             pipelines.push({$match: {date}})
         }
 
-        pipelines.push(
-            {$sort: {_id: -1}}
-            )
+        pipelines.push({$sort: {_id: -1}})
         return this.Transaction.aggregate(pipelines);    
     }
 

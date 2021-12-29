@@ -1,9 +1,10 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsString, IsUppercase } from "class-validator";
 import { SellerStatus } from "./getSellerfilter.dto";
 
 export class AddSellerDto {
     @IsString()
     @IsNotEmpty()
+    @IsUppercase()
     name: string;
 
     @IsString()
@@ -12,6 +13,7 @@ export class AddSellerDto {
 
     @IsString()
     @IsNotEmpty()
+    @IsUppercase()
     LGA: string;
 
     @IsString()

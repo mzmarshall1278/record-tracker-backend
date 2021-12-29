@@ -15,4 +15,8 @@ export class SellerService {
     async createSeller(addSellerDto: AddSellerDto): Promise<Seller>{
         return this.sellerRepository.createSeller(addSellerDto)
     }
+
+    async getSingleSeller (phone: string): Promise<Seller>{
+        return this.sellerRepository.getSingleSeller(phone)
+    }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AddSellerDto } from './dto/AddSeller.dto';
 import { Seller } from './Seller.model';
 import { SellerService } from './seller.service';
@@ -18,5 +18,10 @@ export class SellerController {
     @UsePipes(ValidationPipe)
     createSeller(@Body() addSellerDto: AddSellerDto): Promise<Seller>{
         return this.sellerService.createSeller(addSellerDto);
+    }
+
+    @Get('/:phone')
+    getSingleSeller(@Param('phone') phone: string): Promise<Seller>{
+        return this.sellerService.getSingleSeller(phone)
     }
 }

@@ -10,15 +10,32 @@ export class SellerRepository {
     constructor(@InjectModel('Seller') private readonly Seller: Model<Seller> ){}
 
     async getAllSellers(getSellerDto:GetSellerFilterDto):Promise<Seller[]>{
-        const {name, LGA, status, deal, phone} = getSellerDto;
-        return this.Seller.find()
+        const {name, LGA, phone, status, deal} = getSellerDto;
+
+        if (!(name || LGA || phone || status || deal)) {
+            return this.Seller.find();
+        }
+
+        const pipeline = [];
+
+        if(name) pipeline.push({$match: { $text: { $search: name } } });
+
+        if(phone) pipeline.push({$match: {phone}});
+
+        if(LGA) pipeline.push({$match: {LGA}});
+
+        if(deal) pipeline.push({$match: {deal: +deal}});
+
+        pipeline.push({$sort: {_id: -1}})
+
+        return this.Seller.aggregate(pipeline)
     }
 
     async createSeller (addSellerDto: AddSellerDto): Promise<Seller>{
         const {name, address, LGA, phone, deal, status} = addSellerDto;
 
         const seller = await new this.Seller({
-            name, address, LGA, phone, deal, status
+            name, address, LGA, phone, deal, status, dateJoined: new Date().toISOString()
         }).save()
         return seller
     }

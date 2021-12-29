@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Seller } from './Seller.model';
 import { AddSellerDto } from './dto/AddSeller.dto';
@@ -38,5 +38,14 @@ export class SellerRepository {
             name, address, LGA, phone, deal, status, dateJoined: new Date().toISOString()
         }).save()
         return seller
+    }
+
+    async getSingleSeller (phone: string): Promise<Seller> {
+        const seller = await this.Seller.findOne({phone});
+
+        if(!seller){
+            throw new NotFoundException('The seller does not exist or has not been added!')
+        }
+        return seller;
     }
 }

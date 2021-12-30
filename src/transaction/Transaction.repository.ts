@@ -10,7 +10,7 @@ export class TransactionRepository {
     constructor(@InjectModel('Transaction') private readonly Transaction: Model<Transaction>){}
 
     async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<Transaction[]>{
-        const {date, groupBy} = getTransactionDto;
+        const {date, groupBy, } = getTransactionDto;
 
         const pipelines = [];
 
@@ -32,7 +32,7 @@ export class TransactionRepository {
         }
 
         if(date){
-            pipelines.push({$match: {date}})
+            pipelines.push({$match: {date}}, {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}})
         }
 
         pipelines.push({$sort: {_id: -1}})
@@ -40,10 +40,10 @@ export class TransactionRepository {
     }
 
     async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{
-        const {seller, price, weight, date, deal, quantity } = addTransactionDto;
+        const {seller, price, weight, date, quantity } = addTransactionDto;
 
         const transaction = await new this.Transaction({
-            seller, price, weight, date, deal, quantity
+            seller, price, weight, date, quantity
         }).save()
         return transaction;
     }

@@ -4,13 +4,14 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Transaction } from "./Transaction.model";
 import { GetTransactionFilterDto } from './dto/getTransactionFilter.dto';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class TransactionRepository {
     constructor(@InjectModel('Transaction') private readonly Transaction: Model<Transaction>){}
 
     async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<Transaction[]>{
-        const {date, groupBy, } = getTransactionDto;
+        const {date, groupBy, sellerId } = getTransactionDto;
 
         const pipelines = [];
 
@@ -23,6 +24,13 @@ export class TransactionRepository {
                  totalQuantity: {$sum: '$quantity'},
                 //   }}
                 }}, {$sort: {_id: -1}})
+        }
+
+        if(sellerId) {
+            pipelines.push(
+                {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
+                {$sort: {date: -1}}
+                )
         }
 
         if(date){

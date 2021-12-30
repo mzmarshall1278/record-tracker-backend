@@ -5,6 +5,9 @@ export class GetTransactionFilterDto {
     @IsOptional()
     date: string;
 
+    @IsOptional()
+    sellerId: string
+
     @IsBoolean()
     @IsOptional()
     groupBy: Boolean;

@@ -21,21 +21,18 @@ export class TransactionRepository {
                  totalSale: {$sum: '$price'},
                  totalWeight: {$sum: '$weight'},
                  totalQuantity: {$sum: '$quantity'},
-                //   details: {'$push':{
-                //       weight: '$weight',
-                //       quantity: '$quantity',
-                //       _id: '$_id',
-                //       price: '$price',
-                //       seller: '$seller'
                 //   }}
-                }})
+                }}, {$sort: {_id: -1}})
         }
 
         if(date){
-            pipelines.push({$match: {date}}, {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}})
+            pipelines.push(
+                {$match: {date}},
+                {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}},
+                {$sort: {date: -1}}
+                )
         }
 
-        pipelines.push({$sort: {_id: -1}})
         return this.Transaction.aggregate(pipelines);    
     }
 

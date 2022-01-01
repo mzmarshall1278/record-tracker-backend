@@ -8,7 +8,7 @@ import { GetSellerFilterDto } from './dto/getSellerfilter.dto';
 export class SellerService {
     constructor(private sellerRepository: SellerRepository){}
 
-    async getAllSellers(getSellerDto: GetSellerFilterDto):Promise<Seller[]>{
+    async getAllSellers(getSellerDto: GetSellerFilterDto):Promise<{total: number, sellers: Seller[]} | Seller[]>{
         return this.sellerRepository.getAllSellers(getSellerDto)
     }
 

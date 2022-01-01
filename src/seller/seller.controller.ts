@@ -10,7 +10,7 @@ export class SellerController {
 
     @Get()
     @UsePipes(ValidationPipe)
-    getAllSelers(@Query() getSellerDto: GetSellerFilterDto):Promise<Seller[]>{
+    getAllSelers(@Query() getSellerDto: GetSellerFilterDto):Promise<{total: number, sellers: Seller[]} | Seller[]>{
         return this.sellerService.getAllSellers(getSellerDto)
     }
 

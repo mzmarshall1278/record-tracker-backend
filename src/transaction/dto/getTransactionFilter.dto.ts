@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class GetTransactionFilterDto {
     @IsString()
@@ -11,4 +11,7 @@ export class GetTransactionFilterDto {
     @IsBoolean()
     @IsOptional()
     groupBy: Boolean;
+
+    @IsOptional()
+    page: string;
 }

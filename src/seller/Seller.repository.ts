@@ -11,7 +11,7 @@ export class SellerRepository {
 
     async getAllSellers(getSellerDto:GetSellerFilterDto):Promise<{total: number, sellers: Seller[]} | Seller[]>{
         const {name, LGA, phone, status, deal, page} = getSellerDto;
-        const perPage: number = 2;
+        const perPage: number = 10;
         
 
         if (!(name || LGA || phone || status || deal)) {

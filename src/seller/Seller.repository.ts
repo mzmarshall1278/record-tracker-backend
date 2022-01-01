@@ -9,11 +9,15 @@ import { GetSellerFilterDto } from './dto/getSellerfilter.dto';
 export class SellerRepository {
     constructor(@InjectModel('Seller') private readonly Seller: Model<Seller> ){}
 
-    async getAllSellers(getSellerDto:GetSellerFilterDto):Promise<Seller[]>{
-        const {name, LGA, phone, status, deal} = getSellerDto;
+    async getAllSellers(getSellerDto:GetSellerFilterDto):Promise<{total: number, sellers: Seller[]} | Seller[]>{
+        const {name, LGA, phone, status, deal, page} = getSellerDto;
+        const perPage: number = 2;
+        
 
         if (!(name || LGA || phone || status || deal)) {
-            return this.Seller.find();
+            const total = await this.Seller.find().count();
+            const sellers = await this.Seller.find().sort({dateJoined: -1}).skip((+page-1 || 0) * perPage).limit(perPage);
+            return {total, sellers}
         }
 
         const pipeline = [];
@@ -25,8 +29,12 @@ export class SellerRepository {
         if(LGA) pipeline.push({$match: {LGA}});
 
         if(deal) pipeline.push({$match: {deal: +deal}});
-
-        pipeline.push({$sort: {_id: -1}})
+        pipeline.push(
+            {$sort: {dateJoined: -1}},
+            {$skip: ((+page-1 || 0) * perPage)},
+            {$limit: perPage}
+            )
+            
 
         return this.Seller.aggregate(pipeline)
     }

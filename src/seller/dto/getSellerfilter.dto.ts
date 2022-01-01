@@ -6,6 +6,10 @@ export enum SellerStatus {
 }
 
 export class GetSellerFilterDto {
+
+    @IsOptional()
+    page: string;
+
     @IsString()
     @IsUppercase()
     @IsOptional()
@@ -29,4 +33,3 @@ export class GetSellerFilterDto {
     @IsOptional()
     phone: string;
 }
-

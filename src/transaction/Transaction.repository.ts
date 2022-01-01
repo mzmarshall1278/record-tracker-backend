@@ -10,12 +10,13 @@ import * as mongoose from 'mongoose';
 export class TransactionRepository {
     constructor(@InjectModel('Transaction') private readonly Transaction: Model<Transaction>){}
 
-    async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<Transaction[]>{
-        const {date, groupBy, sellerId } = getTransactionDto;
-
+    async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<{transactions:Transaction[], total: number}>{
+        const {date, groupBy, sellerId, page } = getTransactionDto;
+        const perPage = 3;
         const pipelines = [];
-
+        let total = 0
         if (!Object.keys(getTransactionDto).length) {
+           total = await this.Transaction.find().count()
             pipelines.push({$group: {
                 _id: '$date',
                  totalTransactions: {$sum: 1},
@@ -27,6 +28,7 @@ export class TransactionRepository {
         }
 
         if(sellerId) {
+            total = await this.Transaction.find().count()
             pipelines.push(
                 {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
                 {$sort: {date: -1}}
@@ -34,6 +36,7 @@ export class TransactionRepository {
         }
 
         if(date){
+            total = await this.Transaction.find().count()
             pipelines.push(
                 {$match: {date}},
                 {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}},
@@ -41,7 +44,13 @@ export class TransactionRepository {
                 )
         }
 
-        return this.Transaction.aggregate(pipelines);    
+        pipelines.push(
+            {$count: 'passing_scores'},
+            {$skip: ((+page-1 || 0) * perPage)},
+            {$limit: perPage}
+        )
+
+        return {transactions: await this.Transaction.aggregate(pipelines), total}    
     }
 
     async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{

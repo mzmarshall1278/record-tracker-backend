@@ -10,7 +10,7 @@ export class TransactionController {
 
     @Get()
     @UsePipes(ValidationPipe)
-    getALLTasks(@Query() getTransactionDto: GetTransactionFilterDto):Promise<Transaction[]>{
+    getALLTasks(@Query() getTransactionDto: GetTransactionFilterDto):Promise<{transactions:Transaction[], total: number}>{
         return this.transactionService.getAllTransactions(getTransactionDto)
     }
 

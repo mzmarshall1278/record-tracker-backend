@@ -8,7 +8,7 @@ import { GetTransactionFilterDto } from './dto/getTransactionFilter.dto';
 export class TransactionService {
     constructor(private transactionRepository: TransactionRepository ){}
 
-    async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<Transaction[]>{
+    async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<{transactions:Transaction[], total: number}>{
         return this.transactionRepository.getAllTransactions(getTransactionDto);
     }
 

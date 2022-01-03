@@ -12,7 +12,7 @@ export class TransactionRepository {
 
     async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<{transactions:Transaction[], total: number}>{
         const {date, groupBy, sellerId, page } = getTransactionDto;
-        const perPage = 3;
+        const perPage = 10;
         const pipelines = [];
         let total = 0
         if (!Object.keys(getTransactionDto).length) {

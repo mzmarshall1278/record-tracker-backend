@@ -28,7 +28,7 @@ export class TransactionRepository {
         }
 
         if(sellerId) {
-            total = await this.Transaction.find().count()
+            total = await this.Transaction.find({seller: new mongoose.Types.ObjectId(sellerId)}).count()
             pipelines.push(
                 {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
                 {$sort: {date: -1}}
@@ -36,7 +36,7 @@ export class TransactionRepository {
         }
 
         if(date){
-            total = await this.Transaction.find().count()
+            total = await this.Transaction.find({date}).count()
             pipelines.push(
                 {$match: {date}},
                 {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}},
@@ -45,7 +45,6 @@ export class TransactionRepository {
         }
 
         pipelines.push(
-            {$count: 'passing_scores'},
             {$skip: ((+page-1 || 0) * perPage)},
             {$limit: perPage}
         )

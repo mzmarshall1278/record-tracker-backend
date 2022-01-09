@@ -15,7 +15,7 @@ export class TransactionRepository {
         const perPage = 10;
         const pipelines = [];
         let total = 0
-        if (!Object.keys(getTransactionDto).length) {
+        if (Object.keys(getTransactionDto).length == 1 && Object.keys(getTransactionDto).includes('page')) {
            total = await this.Transaction.find().count()
             pipelines.push({$group: {
                 _id: '$date',
@@ -49,7 +49,7 @@ export class TransactionRepository {
             {$limit: perPage}
         )
 
-        return {transactions: await this.Transaction.aggregate(pipelines), total}    
+        return {transactions: await this.Transaction.aggregate(pipelines), total}
     }
 
     async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{
@@ -62,7 +62,7 @@ export class TransactionRepository {
     }
 
     async getSingleTransaction (id: string):Promise<Transaction> {
-        
+
         return this.Transaction.findById(id);
     }
 }

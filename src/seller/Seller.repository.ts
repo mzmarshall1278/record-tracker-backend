@@ -12,8 +12,6 @@ export class SellerRepository {
     async getAllSellers(getSellerDto:GetSellerFilterDto):Promise<{total: number, sellers: Seller[]} | Seller[]>{
         const {name, LGA, phone, status, deal, page} = getSellerDto;
         const perPage: number = 10;
-        
-
         if (!(name || LGA || phone || status || deal)) {
             const total = await this.Seller.find().count();
             const sellers = await this.Seller.find().sort({dateJoined: -1}).skip((+page-1 || 0) * perPage).limit(perPage);
@@ -34,7 +32,6 @@ export class SellerRepository {
             {$skip: ((+page-1 || 0) * perPage)},
             {$limit: perPage}
             )
-            
 
         return this.Seller.aggregate(pipeline)
     }

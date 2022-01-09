@@ -7,7 +7,7 @@ import { SellerStatus } from './dto/getSellerfilter.dto';
     phone: {type: String, required: true}, 
     deal: {type: Number, required: true},
     status: {type: String, Enum:['COMPLETED' ,'PENDING']},
-    dateJoined: {type: Date, required: true}
+    dateJoined: {type: String, required: true}
 })
 SellerSchema.index({name: 'text', LGA: 'text', phone: 'text', })
 
@@ -19,5 +19,5 @@ export interface Seller {
     phone: string;
     deal: number;
     status: SellerStatus;
-    dateJoined: Date;
+    dateJoined: string;
 }

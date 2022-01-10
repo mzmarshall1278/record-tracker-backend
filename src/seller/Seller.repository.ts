@@ -16,7 +16,7 @@ export class SellerRepository {
 
         if (!(name || LGA || phone || status || deal)) {
             const total = await this.Seller.find().count();
-            const sellers = await this.Seller.find().sort({dateJoined: -1}).skip((+page-1 || 0) * perPage).limit(perPage);
+            const sellers = await this.Seller.find().sort({name: 1}).skip((+page-1) * perPage).limit(perPage);
             return {total, sellers}
         }
 
@@ -40,7 +40,7 @@ export class SellerRepository {
     }
 
     async createSeller (addSellerDto: AddSellerDto): Promise<Seller>{
-        const {name, address, LGA, phone, deal, status} = addSellerDto;        
+        const {name, address, LGA, phone, deal, status} = addSellerDto;
         const seller = await new this.Seller({
             name, address, LGA, phone, deal, status, dateJoined: new Date().toLocaleDateString()
         }).save()

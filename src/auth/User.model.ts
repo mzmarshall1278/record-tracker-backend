@@ -4,3 +4,7 @@ import * as mongoose from 'mongoose';
     password: {type: String, required: true}
 })
 
+export interface Seller {
+    name: string;
+    password: string;
+}

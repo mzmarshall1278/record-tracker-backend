@@ -12,7 +12,4 @@ export class AddTransactionDto {
 
     @IsNotEmpty()
     date: string;
-
-    @IsNotEmpty()
-    quantity: number;
 }

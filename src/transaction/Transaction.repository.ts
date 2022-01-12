@@ -56,7 +56,7 @@ export class TransactionRepository {
         const {seller, price, weight, date } = addTransactionDto;
 
         const transaction = await new this.Transaction({
-            seller, price, weight, date, completed: true
+            seller, price, weight, date, completed: false
         }).save()
         return transaction;
     }
@@ -64,5 +64,12 @@ export class TransactionRepository {
     async getSingleTransaction (id: string):Promise<Transaction> {
 
         return this.Transaction.findById(id);
+    }
+
+    async getOngoingTransactions (){
+        const pipeline = [
+            {$match: {completed: false}}
+        ];
+        return this.Transaction.aggregate(pipeline);
     }
 }

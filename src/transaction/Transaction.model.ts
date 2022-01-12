@@ -5,7 +5,8 @@ export const TransactionSchema = new mongoose.Schema({
     seller: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Seller'},
     price: {type: Number, required: true},
     weight: {type: Number, required: true},
-    date: {type: String, required: true}
+    date: {type: String, required: true},
+    completed: {type: Boolean, required: true}
 })
 
 export interface Transaction {
@@ -14,4 +15,5 @@ export interface Transaction {
     price: number;
     weight: number;
     date: string;
+    completed: true;
 }

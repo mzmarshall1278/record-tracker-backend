@@ -53,10 +53,10 @@ export class TransactionRepository {
     }
 
     async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{
-        const {seller, price, weight, date, quantity } = addTransactionDto;
+        const {seller, price, weight, date } = addTransactionDto;
 
         const transaction = await new this.Transaction({
-            seller, price, weight, date, quantity
+            seller, price, weight, date, completed: true
         }).save()
         return transaction;
     }

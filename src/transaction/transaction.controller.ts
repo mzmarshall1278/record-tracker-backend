@@ -20,8 +20,14 @@ export class TransactionController {
         return this.transactionService.addTransaction(addTransactionDto);
     }
 
+    @Get('/ongoing')
+    getOngoingTransactions() {
+        return this.transactionService.getOngoingTransactions();
+    }
+
     @Get('/:id')
     getSingleTransaction(@Param('id') id: string): Promise<Transaction> {
         return this.transactionService.getSingleTransaction(id);
     }
+
 }

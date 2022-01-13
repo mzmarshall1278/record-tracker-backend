@@ -66,7 +66,7 @@ export class TransactionRepository {
         return this.Transaction.findById(id);
     }
 
-    async getOngoingTransactions (){
+    async getOngoingTransactions():Promise<Transaction[]> {
         const pipeline = [
             {$match: {completed: false}}
         ];

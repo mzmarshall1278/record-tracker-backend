@@ -61,7 +61,7 @@ export class SellerRepository {
         return seller;
     }
 
-    async updateSellerStatus (id: string){
+    async updateSellerStatus (id: string): Promise<Seller>{
         return this.Seller.findByIdAndUpdate(id, {$set: {status: 'COMPLETED'}})
     }
 }

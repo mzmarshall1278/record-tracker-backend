@@ -20,7 +20,7 @@ export class SellerService {
         return this.sellerRepository.getSingleSeller(phone)
     }
 
-    async updateSellerStatus(id :string){
+    async updateSellerStatus(id :string): Promise<Seller> {
         return this.sellerRepository.updateSellerStatus(id);
     }
 }

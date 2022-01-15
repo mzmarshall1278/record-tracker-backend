@@ -1,5 +1,5 @@
-import { Model } from 'mongoose';
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Model, Mongoose } from 'mongoose';
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Seller } from './Seller.model';
 import { AddSellerDto } from './dto/AddSeller.dto';
@@ -41,6 +41,11 @@ export class SellerRepository {
 
     async createSeller (addSellerDto: AddSellerDto): Promise<Seller>{
         const {name, address, LGA, phone, deal, status} = addSellerDto;
+
+        const foundSeller = await this.Seller.findOne({phone});
+
+        if(foundSeller) throw new ConflictException('This Number Has been used by another seller.')
+
         const seller = await new this.Seller({
             name, address, LGA, phone, deal, status, dateJoined: new Date().toLocaleDateString()
         }).save()
@@ -55,4 +60,9 @@ export class SellerRepository {
         }
         return seller;
     }
+
+    // async updateSellerStatus (id: string){
+    //     const sellerId = new Mongoose.
+    //     return this.Seller.updateOne()
+    // }
 }

@@ -5,10 +5,16 @@ import { Model } from "mongoose";
 import { Transaction } from "./Transaction.model";
 import { GetTransactionFilterDto } from './dto/getTransactionFilter.dto';
 import * as mongoose from 'mongoose';
+import { SellerService } from '../seller/seller.service';
 
 @Injectable()
 export class TransactionRepository {
-    constructor(@InjectModel('Transaction') private readonly Transaction: Model<Transaction>){}
+    constructor(
+        @InjectModel('Transaction')
+        private readonly Transaction: Model<Transaction>,
+        private sellerService: SellerService
+    
+    ){}
 
     async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<{transactions:Transaction[], total: number}>{
         const {date, groupBy, sellerId, page } = getTransactionDto;
@@ -55,6 +61,7 @@ export class TransactionRepository {
     async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{
         const {seller, price, weight, date } = addTransactionDto;
 
+        await this.sellerService.updateSellerStatus(seller);
         const transaction = await new this.Transaction({
             seller, price, weight, date, completed: false
         }).save()

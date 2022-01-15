@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString, IsUppercase } from 'class-validator';
+import { IsEnum, IsOptional, IsString, IsUppercase, IsNotEmpty } from 'class-validator';
 
 export enum SellerStatus {
     completed = 'COMPLETED',
@@ -7,7 +7,7 @@ export enum SellerStatus {
 
 export class GetSellerFilterDto {
 
-    @IsOptional()
+    @IsNotEmpty()
     page: string;
 
     @IsString()

@@ -61,8 +61,7 @@ export class SellerRepository {
         return seller;
     }
 
-    // async updateSellerStatus (id: string){
-    //     const sellerId = new Mongoose.
-    //     return this.Seller.updateOne()
-    // }
+    async updateSellerStatus (id: string){
+        return this.Seller.findByIdAndUpdate(id, {$set: {status: 'COMPLETED'}})
+    }
 }

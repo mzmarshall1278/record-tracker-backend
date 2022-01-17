@@ -1,4 +1,4 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from "@nestjs/mongoose"
 import { Model } from "mongoose"
 import { User } from "./User.model"
@@ -11,10 +11,10 @@ export class AuthRepository {
     async login(loginDto: AuthDto){
         const {username, password} = loginDto;
         const user = await this.User.findOne({username});
-        if(!user) throw new NotFoundException('User not found');
+        if(!user) throw new UnauthorizedException('Invalid credentials');
 
         const userIsVerified = await this.validatePassword(password, user.password, user.salt);
-        return userIsVerified;
+        if(!userIsVerified) throw new UnauthorizedException('Invalid credentials');
         
     }
 

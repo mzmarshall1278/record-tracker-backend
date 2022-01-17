@@ -9,4 +9,8 @@ export class AuthService {
     async login(loginDto: AuthDto){
         return this.authRepository.login(loginDto);
     }
+
+    async signup(signupDto: AuthDto){
+        return this.authRepository.signup(signupDto);
+    }
 }

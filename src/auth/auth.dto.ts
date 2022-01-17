@@ -1,12 +1,13 @@
-import { IsNotEmpty, Matches, MinLength } from "class-validator";
+import { IsLowercase, IsNotEmpty, Matches, MinLength } from "class-validator";
 
 export class AuthDto {
     @IsNotEmpty()
     @MinLength(4)
-    name: string;
+    @IsLowercase()
+    username: string;
 
     @IsNotEmpty()
     @MinLength(6)
-    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/   )
     password: string;
 }

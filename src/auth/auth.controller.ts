@@ -8,13 +8,13 @@ export class AuthController {
 
     @Post('/login')
     @UsePipes(ValidationPipe)
-    login(@Body() loginDto: AuthDto){
+    login(@Body() loginDto: AuthDto): Promise<{accessToken: string}>{
         return this.authService.login(loginDto);
     }
 
     @Post('/signup')
     @UsePipes(ValidationPipe)
-    signup(@Body() signupDto: AuthDto){
+    signup(@Body() signupDto: AuthDto): Promise<string>{
         return this.authService.signup(signupDto);
     }
 }

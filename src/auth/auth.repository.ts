@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from "@nestjs/mongoose"
 import { Model } from "mongoose"
 import { User } from "./User.model"
@@ -10,7 +10,12 @@ export class AuthRepository {
 
     async login(loginDto: AuthDto){
         const {username, password} = loginDto;
-        return 'login'
+        const user = await this.User.findOne({username});
+        if(!user) throw new NotFoundException('User not found');
+
+        const userIsVerified = await this.validatePassword(password, user.password, user.salt);
+        return userIsVerified;
+        
     }
 
     async signup(signupDto: AuthDto){
@@ -29,6 +34,11 @@ export class AuthRepository {
         } catch (error) {
             return error
         }
+    }
+
+    private async validatePassword(password, dbpassword, salt) {
+        const hash = await bcrypt.hash(password, salt);
+        return hash === dbpassword;
     }
 
     private async hashPassword (password: string, salt: string):Promise<string> {

@@ -10,7 +10,7 @@ export interface User {
     username: string;
     password: string;
     role: UserRole;
-    saltt: string
+    salt: string
 }
 
 export enum UserRole {

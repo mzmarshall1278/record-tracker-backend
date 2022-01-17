@@ -1,14 +1,16 @@
 import * as mongoose from 'mongoose';
  export const UserSchema = new mongoose.Schema({
-    name: {type: String, required: true},
+    username: {type: String, required: true},
     password: {type: String, required: true},
-    role: {type: String, enum: ['SUPER_ADMIN', 'ADMIN'], required: true}
+    role: {type: String, enum: ['SUPER_ADMIN', 'ADMIN'], required: true},
+    salt: {type: String, required: true}
 })
 
 export interface User {
-    name: string;
+    username: string;
     password: string;
     role: UserRole;
+    saltt: string
 }
 
 export enum UserRole {

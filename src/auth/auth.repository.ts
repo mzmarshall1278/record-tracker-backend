@@ -4,21 +4,31 @@ import { Model } from "mongoose"
 import { User } from "./User.model"
 import { AuthDto } from './auth.dto';
 import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt';
+import { jwtPayload } from './jwt-payload.interface';
 
 export class AuthRepository {
-    constructor(@InjectModel ('User') private readonly User: Model<User>){}
+    constructor(
+        @InjectModel ('User') 
+        private readonly User: Model<User>,
+        private jwtService: JwtService
+        ){}
 
-    async login(loginDto: AuthDto){
+    async login(loginDto: AuthDto): Promise<{accessToken: string}>{
         const {username, password} = loginDto;
         const user = await this.User.findOne({username});
         if(!user) throw new UnauthorizedException('Invalid credentials');
 
         const userIsVerified = await this.validatePassword(password, user.password, user.salt);
         if(!userIsVerified) throw new UnauthorizedException('Invalid credentials');
+
+        const payload: jwtPayload = {username: user.username}
+        const accessToken: string = await this.jwtService.sign(payload);
+        return { accessToken };
         
     }
 
-    async signup(signupDto: AuthDto){
+    async signup(signupDto: AuthDto): Promise<string>{
         const {username, password} = signupDto;
 
         const salt = await bcrypt.genSalt();
@@ -30,13 +40,13 @@ export class AuthRepository {
             throw new ConflictException('Username already taken');
            }
             await new this.User({username, password: hashedPassword, role: 'ADMIN', salt}).save()
-            return 'Account Created sucessfully'
+            return 'Account Created successfully'
         } catch (error) {
             return error
         }
     }
 
-    private async validatePassword(password, dbpassword, salt) {
+    private async validatePassword(password, dbpassword, salt): Promise<boolean> {
         const hash = await bcrypt.hash(password, salt);
         return hash === dbpassword;
     }

@@ -1,3 +1,4 @@
+import { AuthModule } from './../auth/auth.module';
 import { SellerRepository } from './Seller.repository';
 import { Module } from '@nestjs/common';
 import { SellerController } from './seller.controller';
@@ -6,7 +7,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { SellerSchema } from './Seller.model';
 
 @Module({
-  imports: [MongooseModule.forFeature([{name: 'Seller', schema: SellerSchema}])],
+  imports: [
+    MongooseModule.forFeature([{name: 'Seller', schema: SellerSchema}]),
+    AuthModule
+  ],
   controllers: [SellerController],
   providers: [SellerService, SellerRepository],
   exports: [SellerService]

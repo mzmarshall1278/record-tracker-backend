@@ -1,10 +1,12 @@
 import { Transaction } from './Transaction.model';
 import { AddTransactionDto } from './dto/addTransaction.dto';
-import { Body, Controller, Get, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { GetTransactionFilterDto } from './dto/getTransactionFilter.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('transaction')
+@UseGuards(AuthGuard())
 export class TransactionController {
     constructor(private transactionService: TransactionService){}
 

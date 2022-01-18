@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AddSellerDto } from './dto/AddSeller.dto';
 import { Seller } from './Seller.model';
 import { SellerService } from './seller.service';
 import { GetSellerFilterDto } from './dto/getSellerfilter.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('seller')
+@UseGuards(AuthGuard())
 export class SellerController {
     constructor(private sellerService: SellerService){}
 

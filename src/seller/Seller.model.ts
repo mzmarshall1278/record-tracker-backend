@@ -1,3 +1,4 @@
+import { User } from 'src/auth/User.model';
 import * as mongoose from 'mongoose';
 import { SellerStatus } from './dto/getSellerfilter.dto';
  export const SellerSchema = new mongoose.Schema({
@@ -7,7 +8,8 @@ import { SellerStatus } from './dto/getSellerfilter.dto';
     phone: {type: String, required: true}, 
     deal: {type: Number, required: true},
     status: {type: String, Enum:['COMPLETED' ,'PENDING']},
-    dateJoined: {type: String, required: true}
+    dateJoined: {type: String, required: true},
+    userId: {required: true, type: mongoose.Types.ObjectId}
 })
 SellerSchema.index({name: 'text', LGA: 'text', phone: 'text', })
 
@@ -20,4 +22,5 @@ export interface Seller {
     deal: number;
     status: SellerStatus;
     dateJoined: string;
+    userId: string | User;
 }

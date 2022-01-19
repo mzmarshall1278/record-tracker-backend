@@ -1,3 +1,4 @@
+import { User } from 'src/auth/User.model';
 import * as mongoose from 'mongoose';
 import { Seller } from 'src/seller/Seller.model';
 
@@ -6,7 +7,8 @@ export const TransactionSchema = new mongoose.Schema({
     price: {type: Number, required: true},
     weight: {type: Number, required: true},
     date: {type: String, required: true},
-    completed: {type: Boolean, required: true}
+    completed: {type: Boolean, required: true},
+    userId: {type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User'}
 })
 
 export interface Transaction {
@@ -16,4 +18,5 @@ export interface Transaction {
     weight: number;
     date: string;
     completed: true;
+    userId: string | User
 }

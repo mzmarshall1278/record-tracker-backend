@@ -5,6 +5,7 @@ import { Seller } from './Seller.model';
 import { AddSellerDto } from './dto/AddSeller.dto';
 import { GetSellerFilterDto } from './dto/getSellerfilter.dto';
 import { User } from '../auth/User.model';
+import * as mongoose from 'mongoose';
 
 @Injectable()
 export class SellerRepository {
@@ -16,26 +17,25 @@ export class SellerRepository {
 
 
         if (!(name || LGA || phone || status || deal)) {
-            const total = await this.Seller.find().count();
-            const sellers = await this.Seller.find().sort({name: 1}).skip((+page-1) * perPage).limit(perPage);
+            const total = await this.Seller.find({userId: new mongoose.Types.ObjectId(user.id)}).count();
+            const sellers = await this.Seller.find({userId: new mongoose.Types.ObjectId(user.id)}).sort({name: 1}).skip((+page-1) * perPage).limit(perPage);
             return {total, sellers}
         }
 
-        const pipeline = [];
+        const pipeline: mongoose.PipelineStage[] = [];
 
-        if(name) pipeline.push({$match: { $text: { $search: name } } });
+        if(name) pipeline.push({$match: { $text: { $search: name }, userId: new mongoose.Types.ObjectId(user.id) }});
 
-        if(phone) pipeline.push({$match: {phone}});
+        if(phone) pipeline.push({$match: {phone, userId: new mongoose.Types.ObjectId(user.id)}});
 
-        if(LGA) pipeline.push({$match: {LGA}});
+        if(LGA) pipeline.push({$match: {LGA, userId: new mongoose.Types.ObjectId(user.id)}});
 
-        if(deal) pipeline.push({$match: {deal: +deal}});
+        if(deal) pipeline.push({$match: {deal: +deal, userId: new mongoose.Types.ObjectId(user.id)}});
         pipeline.push(
             {$sort: {dateJoined: -1}},
             {$skip: ((+page-1 || 0) * perPage)},
             {$limit: perPage}
             )
-
 
         return this.Seller.aggregate(pipeline)
     }
@@ -48,13 +48,13 @@ export class SellerRepository {
         if(foundSeller) throw new ConflictException('This Number Has been used by another seller.')
 
         const seller = await new this.Seller({
-            name, address, LGA, phone, deal, status, dateJoined: new Date().toLocaleDateString()
+            name, address, LGA, phone, deal, status, dateJoined: new Date().toLocaleDateString(), userId: new mongoose.Types.ObjectId(user.id)
         }).save()
         return seller
     }
 
     async getSingleSeller (phone: string, user: User): Promise<Seller> {
-        const seller = await this.Seller.findOne({phone});
+        const seller = await this.Seller.findOne({phone, userId: new mongoose.Types.ObjectId(user.id)});
 
         if(!seller){
             throw new NotFoundException('The seller does not exist or has not been added!')
@@ -63,6 +63,6 @@ export class SellerRepository {
     }
 
     async updateSellerStatus (id: string, user: User): Promise<Seller>{
-        return this.Seller.findByIdAndUpdate(id, {$set: {status: 'COMPLETED'}})
+        return this.Seller.findOneAndUpdate({id, userId: new mongoose.Types.ObjectId(user.id)}, {$set: {status: 'COMPLETED'}})
     }
 }

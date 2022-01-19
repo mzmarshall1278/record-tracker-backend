@@ -4,12 +4,13 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Seller } from './Seller.model';
 import { AddSellerDto } from './dto/AddSeller.dto';
 import { GetSellerFilterDto } from './dto/getSellerfilter.dto';
+import { User } from '../auth/User.model';
 
 @Injectable()
 export class SellerRepository {
     constructor(@InjectModel('Seller') private readonly Seller: Model<Seller> ){}
 
-    async getAllSellers(getSellerDto:GetSellerFilterDto):Promise<{total: number, sellers: Seller[]} | Seller[]>{
+    async getAllSellers(getSellerDto:GetSellerFilterDto, user: User):Promise<{total: number, sellers: Seller[]} | Seller[]>{
         const {name, LGA, phone, status, deal, page} = getSellerDto;
         const perPage: number = 10;
 
@@ -39,7 +40,7 @@ export class SellerRepository {
         return this.Seller.aggregate(pipeline)
     }
 
-    async createSeller (addSellerDto: AddSellerDto): Promise<Seller>{
+    async createSeller (addSellerDto: AddSellerDto, user: User): Promise<Seller>{
         const {name, address, LGA, phone, deal, status} = addSellerDto;
 
         const foundSeller = await this.Seller.findOne({phone});
@@ -52,7 +53,7 @@ export class SellerRepository {
         return seller
     }
 
-    async getSingleSeller (phone: string): Promise<Seller> {
+    async getSingleSeller (phone: string, user: User): Promise<Seller> {
         const seller = await this.Seller.findOne({phone});
 
         if(!seller){
@@ -61,7 +62,7 @@ export class SellerRepository {
         return seller;
     }
 
-    async updateSellerStatus (id: string): Promise<Seller>{
+    async updateSellerStatus (id: string, user: User): Promise<Seller>{
         return this.Seller.findByIdAndUpdate(id, {$set: {status: 'COMPLETED'}})
     }
 }

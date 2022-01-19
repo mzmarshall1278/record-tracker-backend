@@ -63,7 +63,7 @@ export class TransactionRepository {
     async addTransaction(addTransactionDto: AddTransactionDto , user: User):Promise<Transaction>{
         const {seller, price, weight, date } = addTransactionDto;
 
-        await this.sellerService.updateSellerStatus(seller);
+        await this.sellerService.updateSellerStatus(seller, user);
         const transaction = await new this.Transaction({
             seller, price, weight, date, completed: false, userId: user.id
         }).save()

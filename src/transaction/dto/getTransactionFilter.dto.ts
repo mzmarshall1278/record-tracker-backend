@@ -12,6 +12,6 @@ export class GetTransactionFilterDto {
     @IsOptional()
     groupBy: Boolean;
 
-    @IsOptional()
+    @IsNotEmpty()
     page: string;
 }

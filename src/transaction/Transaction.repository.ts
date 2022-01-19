@@ -1,3 +1,4 @@
+import { User } from 'src/auth/User.model';
 import { AddTransactionDto } from './dto/addTransaction.dto';
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -13,28 +14,29 @@ export class TransactionRepository {
         @InjectModel('Transaction')
         private readonly Transaction: Model<Transaction>,
         private sellerService: SellerService
-    
     ){}
 
-    async getAllTransactions(getTransactionDto: GetTransactionFilterDto):Promise<{transactions:Transaction[], total: number}>{
+    async getAllTransactions(getTransactionDto: GetTransactionFilterDto, user: User):Promise<{transactions:Transaction[], total: number}>{
         const {date, groupBy, sellerId, page } = getTransactionDto;
+        
         const perPage = 10;
-        const pipelines = [];
+        let pipelines: mongoose.PipelineStage[] = [
+            {$match: {userId: new mongoose.Types.ObjectId(user.id)}},
+        ];
         let total = 0
         if (Object.keys(getTransactionDto).length == 1 && Object.keys(getTransactionDto).includes('page')) {
-           total = await this.Transaction.find().count()
+            total = await this.Transaction.find({userId: user.id}).count();
             pipelines.push({$group: {
                 _id: '$date',
                  totalTransactions: {$sum: 1},
                  totalSale: {$sum: '$price'},
                  totalWeight: {$sum: '$weight'},
                  totalQuantity: {$sum: '$quantity'},
-                //   }}
                 }}, {$sort: {_id: -1}})
-        }
+            }
 
         if(sellerId) {
-            total = await this.Transaction.find({seller: new mongoose.Types.ObjectId(sellerId)}).count()
+            total = await this.Transaction.find({seller: new mongoose.Types.ObjectId(sellerId)}, {userId: user.id}).count()
             pipelines.push(
                 {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
                 {$sort: {date: -1}}
@@ -42,7 +44,7 @@ export class TransactionRepository {
         }
 
         if(date){
-            total = await this.Transaction.find({date}).count()
+            total = await this.Transaction.find({date}, {userId: user.id}).count()
             pipelines.push(
                 {$match: {date}},
                 {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}},
@@ -55,15 +57,15 @@ export class TransactionRepository {
             {$limit: perPage}
         )
 
-        return {transactions: await this.Transaction.aggregate(pipelines), total}
+        return { transactions: await this.Transaction.aggregate(pipelines), total };
     }
 
-    async addTransaction(addTransactionDto: AddTransactionDto):Promise<Transaction>{
+    async addTransaction(addTransactionDto: AddTransactionDto , user: User):Promise<Transaction>{
         const {seller, price, weight, date } = addTransactionDto;
 
         await this.sellerService.updateSellerStatus(seller);
         const transaction = await new this.Transaction({
-            seller, price, weight, date, completed: false
+            seller, price, weight, date, completed: false, userId: user.id
         }).save()
         return transaction;
     }
@@ -73,8 +75,8 @@ export class TransactionRepository {
         return this.Transaction.findById(id);
     }
 
-    async getOngoingTransactions():Promise<Transaction[]> {
-        const pipeline = [
+    async getOngoingTransactions(user: User):Promise<Transaction[]> {
+        const pipeline: mongoose.PipelineStage[] = [
             {$match: {completed: false}}
         ];
         return this.Transaction.aggregate(pipeline);

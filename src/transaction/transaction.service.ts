@@ -17,10 +17,10 @@ export class TransactionService {
         return this.transactionRepository.addTransaction(addTransactionDto, user);
     }
 
-    async getSingleTransaction (id: string):Promise<Transaction> {
-        return this.transactionRepository.getSingleTransaction(id);
+    async getSingleTransaction (id: string, user: User):Promise<Transaction> {
+        return this.transactionRepository.getSingleTransaction(id, user);
     }
-    
+
     async getOngoingTransactions ( user: User ):Promise<Transaction[]>{
         return this.transactionRepository.getOngoingTransactions(user)
     }

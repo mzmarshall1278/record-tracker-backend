@@ -30,8 +30,11 @@ export class TransactionController {
     }
 
     @Get('/:id')
-    getSingleTransaction(@Param('id') id: string): Promise<Transaction> {
-        return this.transactionService.getSingleTransaction(id);
+    getSingleTransaction(
+      @Param('id') id: string,
+      @GetUser() user: User
+    ): Promise<Transaction> {
+        return this.transactionService.getSingleTransaction(id, user);
     }
 
 }

@@ -1,6 +1,6 @@
 import { User } from 'src/auth/User.model';
 import { AddTransactionDto } from './dto/addTransaction.dto';
-import { Injectable } from "@nestjs/common";
+import { Injectable, ConflictException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Transaction } from "./Transaction.model";
@@ -18,7 +18,7 @@ export class TransactionRepository {
 
     async getAllTransactions(getTransactionDto: GetTransactionFilterDto, user: User):Promise<{transactions:Transaction[], total: number}>{
         const {date, groupBy, sellerId, page } = getTransactionDto;
-        
+
         const perPage = 10;
         let pipelines: mongoose.PipelineStage[] = [
             {$match: {userId: new mongoose.Types.ObjectId(user.id)}},
@@ -70,14 +70,18 @@ export class TransactionRepository {
         return transaction;
     }
 
-    async getSingleTransaction (id: string):Promise<Transaction> {
+    async getSingleTransaction (id: string, user: User):Promise<Transaction> {
 
-        return this.Transaction.findById(id);
+        const transaction = await this.Transaction.findById(id);
+
+        if(transaction.userId !== user.id) throw new UnauthorizedException('You are not authorized to view this transaction')
+
+        return transaction;
     }
 
     async getOngoingTransactions(user: User):Promise<Transaction[]> {
         const pipeline: mongoose.PipelineStage[] = [
-            {$match: {completed: false}}
+            {$match: {completed: true, userId: new mongoose.Types.ObjectId(user.id)}}
         ];
         return this.Transaction.aggregate(pipeline);
     }

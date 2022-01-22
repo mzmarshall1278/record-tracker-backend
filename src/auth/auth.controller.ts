@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/c
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './get-user.decorator';
-import { User } from '../../dist/auth/User.model';
+import { User } from './User.model';
 
 @Controller('auth')
 export class AuthController {

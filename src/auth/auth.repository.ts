@@ -46,7 +46,7 @@ export class AuthRepository {
         }
     }
 
-    async getloggedInUser(user: User){
+    async getloggedInUser(user: User): Promise<{username: string, role: string}>{
         const foundUser = await this.User.findOne({user: user.username});
 
         return {username: foundUser.username, role: foundUser.role}

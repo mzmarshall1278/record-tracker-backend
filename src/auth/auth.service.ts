@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { AuthDto } from './auth.dto';
+import { User } from '../../dist/auth/User.model';
 
 @Injectable()
 export class AuthService {
@@ -12,5 +13,9 @@ export class AuthService {
 
     async signup(signupDto: AuthDto): Promise<string>{
         return this.authRepository.signup(signupDto);
+    }
+
+    async getloggedInUser(user: User): Promise<{username: string, role: string}>{
+        return this.authRepository.getloggedInUser(user)
     }
 }

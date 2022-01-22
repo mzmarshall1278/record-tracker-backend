@@ -46,6 +46,12 @@ export class AuthRepository {
         }
     }
 
+    async getloggedInUser(user: User){
+        const foundUser = await this.User.findOne({user: user.username});
+
+        return {username: foundUser.username, role: foundUser.role}
+    }
+
     private async validatePassword(password, dbpassword, salt): Promise<boolean> {
         const hash = await bcrypt.hash(password, salt);
         return hash === dbpassword;

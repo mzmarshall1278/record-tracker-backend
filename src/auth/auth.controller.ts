@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Post, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AuthDto } from './auth.dto';
 import { AuthService } from './auth.service';
 import { GetUser } from './get-user.decorator';
@@ -21,6 +22,7 @@ export class AuthController {
     }
 
     @Get('/user')
+    @UseGuards(AuthGuard())
     getLoggedInUser(@GetUser() user: User): Promise<{username: string, role: string}>{
         return this.authService.getloggedInUser(user);
     }

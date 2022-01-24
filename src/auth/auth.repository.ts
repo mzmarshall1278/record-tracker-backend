@@ -25,7 +25,7 @@ export class AuthRepository {
         const payload: jwtPayload = {username: user.username}
         const accessToken: string = await this.jwtService.sign(payload);
         return { accessToken };
-        
+
     }
 
     async signup(signupDto: AuthDto): Promise<string>{
@@ -47,6 +47,10 @@ export class AuthRepository {
     }
 
     async getloggedInUser(user: User): Promise<{username: string, role: string}>{
+      if (!user) {
+        throw new UnauthorizedException('Authorization error');
+      }
+
         const foundUser = await this.User.findOne({user: user.username});
 
         return {username: foundUser.username, role: foundUser.role}

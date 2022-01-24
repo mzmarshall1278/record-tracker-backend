@@ -16,7 +16,7 @@ export class SellerController {
     @UsePipes(ValidationPipe)
     getAllSelers(
         @Query() getSellerDto: GetSellerFilterDto,
-        @GetUser() user: User    
+        @GetUser() user: User
         ):Promise<{total: number, sellers: Seller[]} | Seller[]>{
         return this.sellerService.getAllSellers(getSellerDto, user)
     }
@@ -24,15 +24,15 @@ export class SellerController {
     @Post()
     @UsePipes(ValidationPipe)
     createSeller(
-        @Body() addSellerDto: AddSellerDto, 
-        @GetUser() user: User 
+        @Body() addSellerDto: AddSellerDto,
+        @GetUser() user: User
         ): Promise<Seller>{
         return this.sellerService.createSeller(addSellerDto, user);
     }
 
     @Get('/:phone')
     getSingleSeller(
-        @Param('phone') phone: string, 
+        @Param('phone') phone: string,
         @GetUser() user: User
         ): Promise<Seller>{
         return this.sellerService.getSingleSeller(phone, user)

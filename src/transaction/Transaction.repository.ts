@@ -44,7 +44,7 @@ export class TransactionRepository {
         }
 
         if(date){
-            total = await this.Transaction.find({date}, {userId: user.id}).count()
+            total = await this.Transaction.find({date, userId: user.id}).count()
             pipelines.push(
                 {$match: {date}},
                 {$lookup: {from: 'sellers', localField: 'seller', foreignField: '_id', as: 'seller'}},

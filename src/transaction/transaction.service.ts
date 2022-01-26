@@ -20,8 +20,4 @@ export class TransactionService {
     async getSingleTransaction (id: string, user: User):Promise<Transaction> {
         return this.transactionRepository.getSingleTransaction(id, user);
     }
-
-    async getOngoingTransactions ( user: User ):Promise<Transaction[]>{
-        return this.transactionRepository.getOngoingTransactions(user)
-    }
 }

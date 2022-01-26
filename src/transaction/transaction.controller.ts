@@ -24,11 +24,6 @@ export class TransactionController {
         return this.transactionService.addTransaction(addTransactionDto, user);
     }
 
-    @Get('/ongoing')
-    getOngoingTransactions(@GetUser() user: User) {
-        return this.transactionService.getOngoingTransactions(user);
-    }
-
     @Get('/:id')
     getSingleTransaction(
       @Param('id') id: string,

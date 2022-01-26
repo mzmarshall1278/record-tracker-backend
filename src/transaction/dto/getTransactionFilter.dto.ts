@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class GetTransactionFilterDto {
     @IsString()
@@ -8,9 +8,9 @@ export class GetTransactionFilterDto {
     @IsOptional()
     sellerId: string
 
-    @IsBoolean()
+    @IsString()
     @IsOptional()
-    completed: Boolean;
+    completed: string;
 
     @IsNotEmpty()
     page: string;

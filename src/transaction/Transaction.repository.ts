@@ -36,9 +36,10 @@ export class TransactionRepository {
             }
 
         if(completed){
-            total = await this.Transaction.find({completed: true, userId: user.id}).count()
+            let param = completed == 'true' ? true: false
+            total = await this.Transaction.find({completed: param, userId: user.id}).count()
             pipelines.push(
-                {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
+                {$match: {completed: param}},
                 {$sort: {date: -1}}
                 ) 
         }
@@ -85,20 +86,6 @@ export class TransactionRepository {
         if(transaction.userId !== user.id) throw new UnauthorizedException('You are not authorized to view this transaction')
 
         return transaction;
-    }
-
-    async getOngoingTransactions(user: User):Promise<Transaction[]> {
-        const pipeline: mongoose.PipelineStage[] = [
-            {$match: {completed: false, userId: new mongoose.Types.ObjectId(user.id)}},
-            // {$group: {
-            //     _id: {completed: '$completed', userId: new mongoose.Types.ObjectId(user.id)},
-            //     totalPrice: {$sum: '$price'},
-            //     totalQuantity: {$sum: '$quantity'},
-            //     totalWeight: {$sum: '$weight'},
-            //     count: { $sum: 1 }
-            // }}
-        ];
-        return this.Transaction.aggregate(pipeline);
     }
 
 }

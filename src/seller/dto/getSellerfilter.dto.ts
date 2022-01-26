@@ -7,7 +7,7 @@ export enum SellerStatus {
 
 export class GetSellerFilterDto {
 
-    @IsNotEmpty()
+    @IsOptional()
     page: string;
 
     @IsString()

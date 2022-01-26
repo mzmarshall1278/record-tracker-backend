@@ -10,7 +10,7 @@ export class GetTransactionFilterDto {
 
     @IsBoolean()
     @IsOptional()
-    groupBy: Boolean;
+    completed: Boolean;
 
     @IsNotEmpty()
     page: string;

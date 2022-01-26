@@ -17,7 +17,7 @@ export class TransactionRepository {
     ){}
 
     async getAllTransactions(getTransactionDto: GetTransactionFilterDto, user: User):Promise<{transactions:Transaction[], total: number}>{
-        const {date, groupBy, sellerId, page } = getTransactionDto;
+        const {date, completed, sellerId, page } = getTransactionDto;
 
         const perPage = 10;
         let pipelines: mongoose.PipelineStage[] = [
@@ -35,8 +35,16 @@ export class TransactionRepository {
                 }}, {$sort: {_id: -1}})
             }
 
+        if(completed){
+            total = await this.Transaction.find({completed: true, userId: user.id}).count()
+            pipelines.push(
+                {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
+                {$sort: {date: -1}}
+                ) 
+        }
+
         if(sellerId) {
-            total = await this.Transaction.find({seller: new mongoose.Types.ObjectId(sellerId)}, {userId: user.id}).count()
+            total = await this.Transaction.find({seller: new mongoose.Types.ObjectId(sellerId), userId: user.id}, {userId: user.id}).count()
             pipelines.push(
                 {$match: {seller: new mongoose.Types.ObjectId(sellerId)}},
                 {$sort: {date: -1}}
@@ -81,8 +89,16 @@ export class TransactionRepository {
 
     async getOngoingTransactions(user: User):Promise<Transaction[]> {
         const pipeline: mongoose.PipelineStage[] = [
-            {$match: {completed: true, userId: new mongoose.Types.ObjectId(user.id)}}
+            {$match: {completed: false, userId: new mongoose.Types.ObjectId(user.id)}},
+            // {$group: {
+            //     _id: {completed: '$completed', userId: new mongoose.Types.ObjectId(user.id)},
+            //     totalPrice: {$sum: '$price'},
+            //     totalQuantity: {$sum: '$quantity'},
+            //     totalWeight: {$sum: '$weight'},
+            //     count: { $sum: 1 }
+            // }}
         ];
         return this.Transaction.aggregate(pipeline);
     }
+
 }
